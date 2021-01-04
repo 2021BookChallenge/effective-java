@@ -6,14 +6,15 @@
 
 **그 클래스의 인스턴스를 반환하는 단순한 정적 메서드** 말이다.
 
-&nbsp;
-
 ```java
 public static Boolean valueOf(boolean b) {
 	return b ? Boolean.TRUE : Boolean.FALSE;
 }
 ```
 ##### 이 메서드는 기본 타입인 boolean 값을 받아 Boolean 객체 참조로 변환해준다.
+
+
+&nbsp;
 
 ## 💎 정적 팩터리 메서드가 생성자보다 좋은 이유
 
