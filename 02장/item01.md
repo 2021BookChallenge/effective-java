@@ -31,3 +31,10 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 &nbsp;
 
 ### 2. 호출될 때마다 인스턴스를 새로 생성하지 않아도 된다.
+
+> - **불변 클래스 (Immutable)**  
+: 변경이 불가능한 클래스  
+	- 레퍼런스 타입의 객체 (heap 영역에서 생성)  
+	- Thread-safe (재할당은 가능. 값 복사 X)   
+	Ex. String, Boolean, Integer, Float, Long ↔ (StringBuilder는 가변 클래스)
+	
