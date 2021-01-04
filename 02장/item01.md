@@ -39,6 +39,19 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 	- 레퍼런스 타입의 객체 (heap 영역에서 생성)  
 	- Thread-safe (재할당은 가능. 값 복사 X)   
 	Ex. String, Boolean, Integer, Float, Long ↔ (StringBuilder는 가변 클래스)
+```java
+@DisplayName("Boolean is an immutable class")
+@Test
+void booleanTest() {
+	Boolean boolean1 = Boolean.valueOf(true);
+	Boolean boolean2 = Boolean.valueOf("true");
+	Boolean boolean3 = new Boolean(true);
+
+	assertThat(boolean1).isSameAs(boolean2);
+	assertThat(boolean1).isNotSameAs(boolean3);
+}
+```
+##### `Boolean.valueOf()` 메서드는 객체를 생성하지 않는다.
 	
 #### 이와 비슷한 기법  
 > - **플라이웨이트 패턴 (Flyweight pattern)**  
