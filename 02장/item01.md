@@ -40,6 +40,7 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 	- Thread-safe (재할당은 가능. 값 복사 X)   
 	Ex. String, Boolean, Integer, Float, Long ↔ (StringBuilder는 가변 클래스)
 	
+#### 이와 비슷한 기법  
 > - **플라이웨이트 패턴 (Flyweight pattern)**  
 : '공유'를 통하여 다양한 객체들을 효과적으로 지원하는 방법  
 	- 객체 내부에서 참조하는 객체를 직접 만들지 않고, 있다면 객체를 공유하고 없다면 만들어 줌 (Pool로 관리)  
