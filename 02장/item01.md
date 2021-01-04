@@ -32,9 +32,16 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 
 ### 2. 호출될 때마다 인스턴스를 새로 생성하지 않아도 된다.
 
+불변 클래스(Immutable)는 인스턴스를 미리 만들어 놓거나, 새로 생성한 인스턴스를 캐싱하여 재활용해 불필요한 객체 생성을 막아 성능을 끌어올려 준다.  
+
 > - **불변 클래스 (Immutable)**  
 : 변경이 불가능한 클래스  
 	- 레퍼런스 타입의 객체 (heap 영역에서 생성)  
 	- Thread-safe (재할당은 가능. 값 복사 X)   
 	Ex. String, Boolean, Integer, Float, Long ↔ (StringBuilder는 가변 클래스)
 	
+> - **플라이웨이트 패턴 (Flyweight pattern)**  
+: '공유'를 통하여 다양한 객체들을 효과적으로 지원하는 방법  
+	- 객체 내부에서 참조하는 객체를 직접 만들지 않고, 있다면 객체를 공유하고 없다면 만들어 줌 (Pool로 관리)  
+	Ex. String Pool (Heap 영역의 permanant 영역에 할당): 같은 내용의 String 객체가 선언된다면 기존의 String 객체를 참조  
+→ 데이터를 공유하여 메모리를 절약하는 패턴
