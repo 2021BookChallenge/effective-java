@@ -6,7 +6,7 @@
 
 &nbsp;
 
-## 💎 점층적 생성자 패턴 (telescoping
+## 💎 점층적 생성자 패턴 (telescoping constructor pattern)
 
 **필수 매개변수를 받는 생성자 1개, 그리고 선택매개변수를 하나씩 늘여가며 생성자를 만드는 패턴**
 
