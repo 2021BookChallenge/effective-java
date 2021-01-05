@@ -150,3 +150,70 @@ API를 만들 때 이 유연성을 응용하면 구현 클래스를 공개하지
 이를 통해서 사용자는 팩토리 메서드가 반환하는 인스턴스가 어떤 클래스인지 알 수도 없고, 알 필요도 없어진다.  
 → 철저히 인터페이스 기반의 구현이 이루어진다.
 
+&nbsp;
+
+ex)  
+```java
+public interface MyInt {
+    static MyInt of(int v) {
+        MyInt instance;
+
+        if (v > 100) {
+            instance = new MyBigInt(v);
+        } else {
+            instance = new MySmallInt(v);
+        }
+
+        return instance;
+    }
+
+    String getValue();
+
+    class MySmallInt implements MyInt {
+        private int value;
+        MySmallInt(int v) {
+            this.value = v;
+        }
+
+        @Override
+        public String getValue() {
+            return "MySmallInt: " + this.value;
+        }
+    }
+
+    class MyBigInt implements MyInt {
+        private int value;
+
+        MyBigInt(int v) {
+            this.value = v;
+        }
+
+        @Override
+        public String getValue() {
+            return "MyBigInt: " + this.value;
+        }
+    }
+}
+```
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        MyInt mySmallInt = MyInt.of(10);
+        MyInt myBigInt = MyInt.of(200);
+
+        System.out.println(mySmallInt.getValue());
+        System.out.println(myBigInt.getValue());
+    }
+}
+```
+
+클라이언트는 이 두 클래스의 존재를 모른다. 만약 정수가 100 이하라면 `MySmallInt` 인스턴스를, 그렇지 않다면 `MyBigInt`인스턴스를 반환한다.  
+만약 두 클래스를 사용할 이점이 없어진다면 하나를 삭제 해도 아무 문제가 없다. 새 클래스를 추가할 수도 있다.
+
+클라이언트는 팩터리가 건네주는 객체가 어느 클래스의 인스턴스인지 알 수도 없고 알 필요도 없다. `MyInt`의 하위 클래스이기만 하면 되는 것이다.
+
+&nbsp;
+
+### 5. 정적 팩터리 메서드를 작성하는 시점에는 반환할 객체의 클래스가 존재하지 않아도 된다.
+
