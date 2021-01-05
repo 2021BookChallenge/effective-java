@@ -223,3 +223,128 @@ NutritionFacts cocaCola = new NutriFactsBuilder(240, 8)
 반면, 빌더 패턴은 객체 생성 '전', 값을 setter 메서드를 통해 넣는다. 그리고 다 넣었다면 마지막에 build 메서드를 호출하여 객체를 생성한다.  
 그렇기 때문에 객체 사용 중에 값이 변경될 우려가 없으며, 불변성과 안정성이 올라간다.  
 당연하지만, 빌더 패턴 사용시에는 public setter 메서드를 선언해서는 안된다.
+
+
+### 계층적으로 설계된 클래스와 Builder
+
+1. 각 계층의 클래스에 관련 빌더를 멤버로 정의한다.
+2. 추상 클래스는 추상 빌더를 갖게한다.
+3. 구체 클래스(concrete class)는 구체 빌더를 갖게 한다.
+
+```java
+public abstract class Pizza{
+   public enum Topping { HAM, MUSHROOM, ONION, PEPPER, SAUSAGE }
+   final Set<Topping> toppings;
+
+	 // 추상 클래스는 추상 Builder를 가진다. 서브 클래스에서 이를 구체 Builder로 구현한다.
+   abstract static class Builder<T extends Builder<T>> {
+      EnumSet<Topping> toppings = EnumSet.noneOf(Topping.class);
+      public T addTopping(Topping topping) {
+         toppings.add(Objects.requireNonNull(topping));
+         return self();
+      }
+
+      abstract Pizza build();
+
+			// 하위 클래스는 이 메서드를 overriding하여 this를 반환하도록 해야 한다.
+      protected abstract T self();
+   }
+
+   Pizza(Builder<?> builder) {
+      toppings = builder.toppings.clone();
+   }
+}
+
+public class NyPizza extends Pizza {
+   public enum Size { SMALL, MEDIUM, LARGE }
+   private final Size size;
+
+   public static class Builder extends Pizza.Builder<Builder> {
+      private final Size size;
+
+      public Builder(Size size) {
+         this.size = Objects.requireNonNull(size);
+      }
+
+      @Override public NyPizza build() {
+         return new NyPizza(this);
+      }
+
+      @Override protected Builder self() { return this; }
+   }
+
+   private NyPizza(Builder builder) {
+      super(builder);
+      size = builder.size;
+   }
+}
+
+public class Calzone extends Pizza {
+   private final boolean sauceInside;
+
+   public static class Builder extends Pizza.Builder<Builder> {
+      private boolean sauceInside = false;
+
+      public Builder sauceInside() {
+         sauceInside = true;
+         return this;
+      }
+
+      @Override public Calzone build() {
+         return new Calzone(this);
+      }
+
+      @Override protected Builder self() { return this; }
+   }
+
+   private Calzone(Builder builder) {
+      super(builder);
+      sauceInside = builder.sauceInside;
+   }
+}
+```
+
+`Pizza.Builder` 클래스는 재귀적 타입 한정을 이용하는 제네릭 타입이다. **여기에 추상 메서드인 `self`를 더해 하위 클래스에서는 형변환 하지 않고도 메서드 연쇄를 지원할 수 있다.** self 타입이 없는 자바를 위한 이 우회 방법을 시뮬레이트한 셀프 타입(simulated self-type) 관용구라 한다.
+
+`Pizza`의 각 하위 클래스 빌더가 정의한 `build`메서드는 해당하는 구체 하위 클래스를 반환하도록 선언한다.  
+`NyPizza.Builer`는 `NyPizza`를 반환하고, `Calzone.Builder`는 `Calzone`를 반환한다.  
+하위 클래스 메서드가 상위 클래스의 메서드가 정의한 반환 타입(`Pizza`)이 아닌, 그 하위 타입을 반환하는 기능을 공변 반환 타이핑이라고 한다.  
+이 기능을 이용하면 클라이언트가 형변환에 신경 쓰지 않고도 빌더를 사용할 수 있다. 
+
+##### 계층적 빌더를 사용하는 클라이언트 코드
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        NYPizza pizza = new NYPizza.Builder(SMALL)
+                .addTopping(SAUSAGE)
+                .addTopping(ONION)
+                .build();
+
+        Calzone calzone = new Calzone.Builder()
+                .addTopping(HAM)
+                .sauceInside()
+                .build();
+    }
+}
+```
+빌더를 이용하면 가변인수 매개변수를 여러 개 사용할 수 있다. `addTopping` 메서드가 이렇게 구현된 예다.
+
+빌더 하나로 여러 객체를 순회하면서 만들 수 있고, 빌더에 넘기는 매개변수에 따라 다른 객체를 만들 수도 있다.
+
+### 빌더 패턴의 단점
+
+**성능** 객체를 만들려면 그에 앞서 빌더부터 만들어야 한다.  
+물론 빌더 생성 비용이 크진 않지만, 성능에 민감한 상황에서는 문제가 될 수 있다.
+
+**장황** 점층적 생성자 패턴보다는 코드가 장황해 매개변수가 4개 이상은 되어야 값어치를 한다.
+
+&nbsp;
+
+## 💎 결론
+
+**생성자나 정적 팩터리가 처리해야 할 매개변수가 많다변 빌더 패턴을 선택하는 게 더 낫다.**
+
+매개변수 중 다수가 필수가 아니거나 같은 타입이면 특히 더 그렇다.
+
+빌더는 점층적 생성자보다 클라이언트 코드를 읽고 쓰기가 훨씬 간결하고, 자바빈즈보다 훨씬 안전하다.
