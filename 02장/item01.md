@@ -231,4 +231,5 @@ public class Main {
 1. 서비스 제공자 인터페이스(Service Provider Interface): 서비스 인터페이스의 인스턴스를 생성하는 팩토리 객체를 설명
 
 대표적인 서비스 제공자 프레임워크로는 `JDBC(Java Database Connectivity)`가 있다.  
-Database에는 MySql, OracleDB, MariaDB등 다양하게 존재하는데 이를 JDBC라는 프레임워크로 관리할 수 있다.
+MySql, OracleDB, MariaDB등 다양한 Database를 JDBC라는 프레임워크로 관리할 수 있다.
+
