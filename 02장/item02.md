@@ -210,9 +210,16 @@ public class NutritionFacts {
 }
 ```
 
-`NutritionFacts` 클래스는 불변이며, 모든 매개변수의 기본값을 한 곳에 모아 뒀다. 이 빌더의 Setter 메서드는 빌더 자신을 반환하기 때문에 연쇄적으로 호출할 수 있다.(method chaining)
+`NutritionFacts` 클래스는 불변이며, 모든 매개변수의 기본값을 한 곳에 모아 뒀다.  
+이 빌더의 Setter 메서드는 빌더 자신을 반환하기 때문에 연쇄적으로 호출할 수 있다.(method chaining)
 
 ```
 NutritionFacts cocaCola = new NutriFactsBuilder(240, 8)
       .calories(100).sodium(35).carbohydrate(30).build();
 ```
+
+> 빌더 패턴과 자바 빈즈 패턴의 가장 큰 차이점은 앞에서도 말한, 불변성에 있다.  
+자바 빈즈 패턴은 객체를 생성한 '후', 값을 setter 메서드를 통해 넣는다. 그렇기에 객체 사용 도중 실수로, 혹은 악의적인 목적으로 setter 메서드를 통해 유효하지 않은 값이나 null값, 혹은 정확하지 않은 값이 들어갈 수 있다.  
+반면, 빌더 패턴은 객체 생성 '전', 값을 setter 메서드를 통해 넣는다. 그리고 다 넣었다면 마지막에 build 메서드를 호출하여 객체를 생성한다.  
+그렇기 때문에 객체 사용 중에 값이 변경될 우려가 없으며, 불변성과 안정성이 올라간다.  
+당연하지만, 빌더 패턴 사용시에는 public setter 메서드를 선언해서는 안된다.
