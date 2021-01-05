@@ -14,6 +14,8 @@ List<String> list = Arrays.**asList**(nums);
 Collections.sort(list);
 ```
 
+&nbsp;
+
 ### 정적 팩터리 메서드란?
 
 static으로 선언된 메서드이며, new Object()와 같이 객체생성을 하지 않고 사용할 수 있는 메서드이다.  
@@ -35,6 +37,7 @@ public static Boolean valueOf(boolean b) {
 
 한 객체의 생성자 여러개로 오버로딩하면, 모든 생성자의 이름은 같지만 매개변수만 다르다.  
 이러한 경우 **단순히 매개변수만 보고 의미하는 바를 정확하게 알기 힘든 경우**가 많다.  
+
 생성자에 넘기는 매개변수와 생성자 자체만으로는 반환될 객체의 특성을 제대로 설명하지 못한다.  
 **입력 매개변수들의 순서를 다르게 한 생성자를 새로 추가하는 식은 좋지 않은 발상이다.**  
 각 생성자가 어떤 역할을 하는지 정확히 기억하기 어렵고, 코드를 읽는 사람도 의미를 알지 못할 것이다.
@@ -57,7 +60,7 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 	- 레퍼런스 타입의 객체 (heap 영역에서 생성)  
 	- Thread-safe (재할당은 가능. 값 복사 X)   
 	Ex. String, Boolean, Integer, Float, Long ↔ (StringBuilder는 가변 클래스)  
-##### `Boolean.valueOf()` 메서드는 객체를 생성하지 않는다.
+##### `Boolean.valueOf()` 메서드는 객체를 생성하지 않고, Boolean 객체 참조를 반환해 준다.
 ```java
 @DisplayName("Boolean is an immutable class")
 @Test
