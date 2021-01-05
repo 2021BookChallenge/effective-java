@@ -233,3 +233,52 @@ public class Main {
 대표적인 서비스 제공자 프레임워크로는 `JDBC(Java Database Connectivity)`가 있다.  
 MySql, OracleDB, MariaDB등 다양한 Database를 JDBC라는 프레임워크로 관리할 수 있다.
 
+&nbsp;
+
+## 💎 정적 팩터리 메서드의 단점
+
+### 1. 정적 팩터리 메서드만 제공하면 하위 클래스를 만들 수 없다.
+
+상속을 하게되면 `super()` 를 호출하며 부모 클래스의 함수들을 호출하게된다. 그러나 부모 클래스의 생성자가 private이라면 상속이 불가능하다.  
+보통 정적 팩토리 메서드만 제공하는 경우 생성자를 통한 인스턴스 생성을 막는 경우가 많다.
+
+ex) `Collections`는 생성자가 private으로 구현되어 있기 때문에 상속할 수 없다. 
+
+그러나, 이 제약은 상속보다 컴포지션을 사용하도록 유도하고, 불변 타입으로 만들려면 이 제약을 지켜야 한다는 점에서 오히려 장점으로 받아들이기도 한다.  
+(컴포지션: 기존 클래스를 확장하는 대신에 새로운 클래스를 만들고 private 필드로 기존 클래스의 인스턴스를 참조하는 방식)
+
+### 2. 정적 팩터리 메서드는 프로그래머가 찾기 어렵다.
+
+어떤 라이브러리를 사용하기 위해 API문서를 보면 정적 팩터리 메서드에 대해서 확인하기가 쉽지 않다.
+
+아래 Boolean의 API문서를 보면, 생성자에 대한 내용은 별도로 작성하여 구분이 잘 된다.  
+그러나 정적 팩터리 메서드에 대해서는 일반 메서드와 같이 작성이 되어있어 구분하기 쉽지않다.
+
+<img width="1183" alt="스크린샷 2021-01-05 오전 11 40 31" src="https://user-images.githubusercontent.com/45806836/103600471-d4206880-4f4a-11eb-9af3-51d13007c0c9.png">
+
+&nbsp;
+
+## 💎 정적 팩터리 메서드 명명 방식
+
+- **from**: 매개변수를 하나 받아서 해당 타입의 인스턴스를 반환하는 형변환 메서드  
+`Date d = Date.from(instant);`
+- **of**: 여러 매개변수를 받아 적합한 타입의 인스턴스를 반환하는 집계 메서드  
+`Set<Rank> faceCards = EnumSet.of(JACK, QUEEN, KING);`
+- **instance** 혹은 **getInstance**: 매개변수로 명시한 인스턴스를 반환, 같은 인스턴스임을 보장하진 않는다.  
+`StackWalker luke = StackWalker.getInstance(options);`
+- **create** 혹은 **newInstance**: **instance** 혹은 **getInstance**와 같지만, 매번 새로운 인스턴스 생성을 보장  
+`Object newArray = Array.newInstance(classObject, arrayLen);`
+- **get*Type***: **getInstance**와 같으나, 생성할 클래스가 아닌 다른 클래스에 팩터리 메서드를 정의할 때 사용  
+`FileStore fs = Files.getFileStore(path);`  ("***Type***"은 팩터리 메서드가 반환할 객체의 타입)
+- **new*Type***: **newInstance**와 같으나, 생성할 클래스가 아닌 다른 클래스에 팩터리 메서드를 정의할 때 사용  
+`BufferedReader br = Files.newBufferedReader(path);`
+- ***type***: **get*Type***과 **new*Type***의 간결한 버전   
+`List<Complaint> litany = Collections.list(legacyLitany);`
+
+&nbsp;
+
+## 💎 결론
+
+정적 팩터리 메서드와 public 생성자는 각자의 쓰임새가 있으니 상대적인 장단점을 이해하고 사용하는 것이 좋다.  
+
+그렇다고 하더라도 정적 팩터리를 사용하는 게 유리한 경우가 더 많으므로 무작정 public 생성자를 제공하던 습관이 있다면 고치자.
