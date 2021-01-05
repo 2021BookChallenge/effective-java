@@ -130,3 +130,88 @@ public class Main {
 2. 객체가 완성되기 전까지는 **일관성**이 무너진 상태에 놓이게 된다.
 
 → 클래스를 불변으로 만들 수 없으며 스레드 안전성을 얻으려면 추가 작업(freeze 등)을 해줘야 한다.
+
+&nbsp;
+
+## 💎 빌더 패턴
+
+> **Builder를 이용해 필수 매개변수로 객체를 생성하고 일종의 setter를 사용하여 선택 매개변수를 초기화한 뒤 build() 메서드를 호출하여 완전한 객체를 생성하는 패턴**
+
+클라이언트는 필요한 객체를 직접 만드는 대신, 필수 매개변수 만으로 생성자(혹은 정적 팩터리)를 호출해 빌더 객체를 얻는다.  
+그런 다음 빌더 객체가 제공하는 일종의 세터 메스드들로 원하는 선택 매개변수들을 설정한다.  
+마지막으로 매개변수가 없는 `build`메서드를 호출해 (보통은 불변적인) 객체를 얻는다.
+
+점층적 생성자 패턴의 안전성과 자바빈즈 패턴의 가독성을 겸비했다.
+
+빌더는 생성할 클래스 안에 정적(static) 멤버 클래스로 만들어두는 게 보통이다. (lombok 사용 가능)
+
+```java
+public class NutritionFacts {
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+
+    private NutritionFacts(Builder builder) {
+        servingSize = builder.servingSize;
+        servings = builder.servings;
+        calories = builder.calories;
+        fat = builder.fat;
+        sodium = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    }
+
+    public static class Builder {
+        // 필수 매개변수
+        private final int servingSize;
+        private final int servings;
+
+        // 선택 매개변수
+        private int calories = 0;
+        private int fat = 0;
+        private int sodium = 0;
+        private int carbohydrate = 0;
+
+        // 필수 매개변수만을 담은 Builder 생성자
+        public Builder(int servingSize, int servings) {
+            this.servingSize = servingSize;
+            this.servings = servings;
+        }
+
+        // 선택 매개변수의 setter, Builder 자신을 반환해 연쇄적으로 호출 가능
+        public Builder calories(int val) {
+            calories = val;
+            return this;
+        }
+
+        public Builder fat(int val) {
+            fat = val;
+            return this;
+        }
+        
+        public Builder sodium(int val) {
+            sodium = val;
+            return this;
+        }
+        
+        public Builder carbohydrate(int val) {
+            carbohydrate = val;
+            return this;
+        }
+        
+        // build() 호출로 최종 불변 객체를 얻는다.
+        public NutritionFacts build() {
+            return new NutritionFacts(this);
+        }
+    }
+}
+```
+
+`NutritionFacts` 클래스는 불변이며, 모든 매개변수의 기본값을 한 곳에 모아 뒀다. 이 빌더의 Setter 메서드는 빌더 자신을 반환하기 때문에 연쇄적으로 호출할 수 있다.(method chaining)
+
+```
+NutritionFacts cocaCola = new NutriFactsBuilder(240, 8)
+      .calories(100).sodium(35).carbohydrate(30).build();
+```
