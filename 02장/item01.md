@@ -73,7 +73,41 @@ void booleanTest() {
 	assertThat(boolean1).isNotSameAs(boolean3);
 }
 ```
+
+&nbsp;
+
+ex) 
+```java
+class Singleton {
+    private static Singleton singleton = null;
+
+    private Singleton() {}
+
+    static Singleton getInstance() {
+        if (singleton == null) {
+            singleton = new Singleton();
+        }
+
+        return singleton;
+    }
+}
+```
+생성자를 private 으로 선언하여 `new` 키워드를 통한 객체 생성을 막아두고, `getInstance` 메서드를 이용하여 인스턴스를 없다면 생성하고, 있다면 반환하도록 하였다.
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Singleton a = Singleton.getInstance();
+        Singleton b = Singleton.getInstance();
+        System.out.println(a == b); // true
+    }
+}
+```
+
+`getInstance`를 해서 비교해보면, 객체가 하나만 생성되었음을 알 수 있다.
 	
+&nbsp;
+
 #### 이와 비슷한 기법  
 > - **플라이웨이트 패턴 (Flyweight pattern)**  
 : '공유'를 통하여 다양한 객체들을 효과적으로 지원하는 방법  
@@ -96,4 +130,23 @@ void booleanTest() {
 ### 3. 반환 타입의 하위 타입 객체를 반환할 수 있는 능력이 있다.
 
 > **반환할 객체의 클래스를 자유롭게 선택할 수 있는 '유연성'을 부여해준다.**
+
+정적 메서드로부터 인터페이스 자체를 반환하여, 구현 클래스를 공개하지 않고도 그 객체를 반환할 수 있다.  
+구현 클래스의 상세를 숨길 수 있고, 사용자는 객체를 인터페이스만으로 다룰 수 있다.
+
+API를 만들 때 이 유연성을 응용하면 구현 클래스를 공개하지 않고도 그 객체를 반환할 수 있어, API를 작게 유지할 수 있다.  
+이는 인터페이스를 정적 팩토리 메서드의 반환 타입으로 사용하는 **인터페이스 기반 프레임워크**를 만드는 핵심 기술이기도 하다.
+
+이 예로 java.util.Collections가 있다.  
+프로그래머는 명시한 인터페이스대로 동작하는 객체를 얻을 것임을 알기에 굳이 별도 문서를 찾아가며 실제 구현 클래스가 무엇인지 알아보지 않아도 된다.  
+나아가 정적 팩토리 메서드를 사용하는 클라이언트는 얻은 객체를 (그 구현 클래스가 아닌) 인터페이스만으로 다루게 된다.
+
+&nbsp;
+
+### 4. 입력 매개변수에 따라 매번 다른 클래스의 객체를 반환할 수 있다.
+
+> **반환 타입의 하위 타입이기만 하면 어떤 클래스의 객체도 반환할 수 있다.**  
+
+이를 통해서 사용자는 팩토리 메서드가 반환하는 인스턴스가 어떤 클래스인지 알 수도 없고, 알 필요도 없어진다.  
+→ 철저히 인터페이스 기반의 구현이 이루어진다.
 
