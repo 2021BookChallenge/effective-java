@@ -153,9 +153,10 @@ API를 만들 때 이 유연성을 응용하면 구현 클래스를 공개하지
 &nbsp;
 
 ex)  
+
 ```java
 public interface MyInt {
-    static MyInt of(int v) {
+    **static** MyInt of(int v) {
         MyInt instance;
 
         if (v > 100) {
