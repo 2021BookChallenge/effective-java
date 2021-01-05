@@ -100,8 +100,6 @@ public class Main {
 ```
 
 `getInstance`를 해서 비교해보면, 객체가 하나만 생성되었음을 알 수 있다.
-	
-&nbsp;
 
 #### 이와 비슷한 기법  
 > - **플라이웨이트 패턴 (Flyweight pattern)**  
