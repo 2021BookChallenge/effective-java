@@ -156,7 +156,7 @@ ex)
 
 ```java
 public interface MyInt {
-    **static** MyInt of(int v) {
+    static MyInt of(int v) {
         MyInt instance;
 
         if (v > 100) {
@@ -218,3 +218,17 @@ public class Main {
 
 ### 5. 정적 팩터리 메서드를 작성하는 시점에는 반환할 객체의 클래스가 존재하지 않아도 된다.
 
+이런 유연한 점을 이용하여 **서비스 제공자 프레임워크(Service Provider Framework)**를 만드는 근간이 된다.
+
+서비스 제공자 프레임워크는 3가지의 핵심 컴포넌트로 이뤄진다.
+
+1. 서비스 인터페이스(Service Interface): 구현체의 동작을 정의
+2. 제공자 등록 API(Provider Registration API): 제공자가 구현체를 등록할 때 사용
+3. 서비스 접근 API(Service Access API): 클라이언트가 서비스의 인스턴스를 얻을 때 사용
+
+3개의 핵심 컴포넌트와 더불어 종종 네번째 컴포넌트가 사용되기도 한다.
+
+1. 서비스 제공자 인터페이스(Service Provider Interface): 서비스 인터페이스의 인스턴스를 생성하는 팩토리 객체를 설명
+
+대표적인 서비스 제공자 프레임워크로는 `JDBC(Java Database Connectivity)`가 있다.  
+Database에는 MySql, OracleDB, MariaDB등 다양하게 존재하는데 이를 JDBC라는 프레임워크로 관리할 수 있다.
