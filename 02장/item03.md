@@ -77,6 +77,8 @@ private Elvis() {
 }
 ```
 
+&nbsp;
+
 ### 2. 정적 팩터리 메서드를 public static 멤버로 제공하는 방식
 
 **정적 팩터리 방식의 싱글턴**
