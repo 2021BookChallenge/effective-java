@@ -1,1 +1,72 @@
 # 🔗 아이템 3. private 생성자나 열거 타입으로 싱글턴임을 보증하라
+
+> **싱글턴**  
+: 인스턴스를 오직 하나만 생성할 수 있는 클래스  
+ex) 함수(무상태 객체), 설계상 유일해야 하는 시스템 컴포넌트
+
+### 싱글턴의 한계
+
+1. **private 생성자를 가지고 있기 때문에 상속할 수 없다.**  
+private 생성자는 오직 싱글톤 클래스 자신만이 자기 오브젝트를 만들도록 제한한다.  
+문제는 private 생성자를 가진 클래스는 다른 생성자가 없다면 객체지향의 장점인 상속과 다형성 사용이 불가능하다는 점이다.
+2. **싱글턴은 테스트하기가 어렵다.**  
+클래스를 싱글턴으로 만들면 이를 사용하는 클라이언트를 테스트 하기가 어려울 수 있다.  
+만들어지는 방식이 제한적이기 떄문에 테스트에서 사용될 때 가짜 구현(mock Object)으로 대체하기가 어렵다.
+3. **서버환경에서는 싱글턴이 하나만 만들어지는 것을 보장하지 못한다.**  
+서버에서 클래스 로더를 어떻게 구성하고 있느냐에 따라서, 혹은 여러 개의 JVM에 분산되어 설치가 되는 경우에 싱글턴 클래스임에도 불구하고 하나 이상의 오브젝트가 만들어질 수 있다.
+4. **싱글톤의 사용은 전역 상태를 만들 수 있기 때문에 바람직하지 못하다.**  
+아무 객체나 자유롭게 접근하고 수정하고 공유할 수 있는 전역 상태를 갖는 것은 객체지향 프로그래밍에서는  권장되지 않는 프로그래밍 모델이다. 대신 static 필드와 메소드로만 구성된 클래스를 사용하는 것을 권장한다.
+
+&nbsp;
+
+## 💎 싱글턴을 만드는 방식
+
+싱글턴을 만드는 방식은 두 가지가 있다. 두 방식 모두 생성자는 `private`으로 감춰두고,  
+유일한 인스턴스에 접근할 수 있는 수단으로 `public static` 멤버를 하나 마련해 둔다.
+
+### public static 멤버가 final 필드인 방식
+
+##### public static final 필드 방식의 싱글턴
+
+```java
+public class Elvis {
+	public static final Elvis INSTANCE = new Elvis();
+	private Elvis() { ... }
+
+	public void leaveTheBuilding()
+}
+```
+
+private 생성자는 `public static final`필드인 `Elvis.INSTANCE`를 초기화할 때 딱 한 번만 호출된다.  
+public이나 protected 생성자가 없으므로 `Elvis`클래스가 초기화될 때 만들어진 인스턴스가 전체 시스템에서 하나뿐임이 보장된다. 
+
+```java
+@Test
+public void singletonTest(){
+    Elvis elvis1 = Elvis.INSTANCE;
+    Elvis elvis2 = Elvis.INSTANCE;
+
+    assertSame(elvis1, elvis2); // SUCCESS 
+}
+```
+
+*예외) 리플렉션 API인 `AccessibleObject.setAccessible`을 사용해 private 생성자를 호출할 수 있다.*  
+리플렉션 API: `java.lang.reflect`, class 객체가 주어지면, 해당 클래스의 인스턴스를 생성하거나 메소드를 호출하거나, 필드에 접근할 수 있다.
+
+```java
+Constructor<Elvis> constructor = (Constructor<Elvis>) elvis2.getClass().getDeclaredConstructor();
+constructor.setAccessible(true);
+
+Elvis elvis3 = constructor.newInstance();
+assertNotSame(elvis2, elvis3); // FAIL
+```
+
+*해결 방법) 생성자를 수정하여 두 번째 객체가 생성되려 할 때 예외를 던지게 하면 된다.*
+
+```java
+private Elvis() {
+	if(INSTANCE != null){
+		throw new RuntimeException("생성자를 호출할 수 없습니다!!");
+	}
+}
+```
