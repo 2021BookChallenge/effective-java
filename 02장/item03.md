@@ -24,7 +24,7 @@ private 생성자는 오직 싱글톤 클래스 자신만이 자기 오브젝트
 싱글턴을 만드는 방식은 두 가지가 있다. 두 방식 모두 생성자는 `private`으로 감춰두고,  
 유일한 인스턴스에 접근할 수 있는 수단으로 `public static` 멤버를 하나 마련해 둔다.
 
-### public static 멤버가 final 필드인 방식
+### 1. public static 멤버가 final 필드인 방식
 
 ##### public static final 필드 방식의 싱글턴
 
@@ -77,3 +77,26 @@ private Elvis() {
 }
 ```
 
+### 2. 정적 팩터리 메서드를 public static 멤버로 제공하는 방식
+
+**정적 팩터리 방식의 싱글턴**
+
+```java
+public class Elvis {
+	private static final Elvis INSTANCE = new Elvis();
+	private Elvis() { ... }
+	public static Elvis getInstance() { return INSTANCE; }
+
+	public void leaveTheBuilding()
+}
+```
+
+`Elvis.getInstance()`는 항상 같은 객체의 참조를 반환하므로 제2의 `Elvis`인스턴스는 만들어지지 않는다.  
+(리플렉션을 통한 예외는 똑같이 적용된다.)
+
+**장점**
+
+1. API를 바꾸지 않고도 싱클턴이 아니게 변경할 수 있다.  
+유일한 인스턴스를 반환하던 팩터리 메서드가 호출하는 스레드 별로 다른 인스턴스를 넘겨주게 할 수 있다.
+2. 원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
+3. 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다.
