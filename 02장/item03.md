@@ -42,12 +42,12 @@ public이나 protected 생성자가 없으므로 `Elvis`클래스가 초기화�
 
 ```java
 @Test
-public void singletonTest(){
-    Elvis elvis1 = Elvis.INSTANCE;
-    Elvis elvis2 = Elvis.INSTANCE;
+	public void singletonTest(){
+		Elvis elvis1 = Elvis.INSTANCE;
+		Elvis elvis2 = Elvis.INSTANCE;
 
-    assertSame(elvis1, elvis2); // SUCCESS 
-}
+		assertSame(elvis1, elvis2); // SUCCESS 
+	}
 ```
 ##### 장점
 1. 해당 클래스가 싱글턴임이 API에 명백히 드러난다.  
@@ -81,7 +81,7 @@ private Elvis() {
 
 ### 2. 정적 팩터리 메서드를 public static 멤버로 제공하는 방식
 
-**정적 팩터리 방식의 싱글턴**
+##### 정적 팩터리 방식의 싱글턴
 
 ```java
 public class Elvis {
@@ -96,7 +96,17 @@ public class Elvis {
 `Elvis.getInstance()`는 항상 같은 객체의 참조를 반환하므로 제2의 `Elvis`인스턴스는 만들어지지 않는다.  
 (리플렉션을 통한 예외는 똑같이 적용된다.)
 
-**장점**
+```java
+@Test
+	public void getInstance() {
+		Elvis elvis1 = Elvis.getInstance();
+		Elvis elvis2 = Elvis.getInstance();
+
+		assertSame(elvis1, elvis2); // SUCCESS
+	}
+```
+
+##### 장점
 
 1. API를 바꾸지 않고도 싱클턴이 아니게 변경할 수 있다.  
 유일한 인스턴스를 반환하던 팩터리 메서드가 호출하는 스레드 별로 다른 인스턴스를 넘겨주게 할 수 있다.
