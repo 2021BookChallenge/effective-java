@@ -49,8 +49,13 @@ public void singletonTest(){
     assertSame(elvis1, elvis2); // SUCCESS 
 }
 ```
+##### 장점
+1. 해당 클래스가 싱글턴임이 API에 명백히 드러난다.  
+public static 필드가 final이니 절대로 다른 객체를 참조할 수 없다.
+2. 간결하다.
 
-*예외) 리플렉션 API인 `AccessibleObject.setAccessible`을 사용해 private 생성자를 호출할 수 있다.*  
+##### 예외
+*리플렉션 API인 `AccessibleObject.setAccessible`을 사용해 private 생성자를 호출할 수 있다.*  
 리플렉션 API: `java.lang.reflect`, class 객체가 주어지면, 해당 클래스의 인스턴스를 생성하거나 메소드를 호출하거나, 필드에 접근할 수 있다.
 
 ```java
@@ -61,12 +66,14 @@ Elvis elvis3 = constructor.newInstance();
 assertNotSame(elvis2, elvis3); // FAIL
 ```
 
-*해결 방법) 생성자를 수정하여 두 번째 객체가 생성되려 할 때 예외를 던지게 하면 된다.*
+##### 해결 방법
+*생성자를 수정하여 두 번째 객체가 생성되려 할 때 예외를 던지게 하면 된다.*
 
 ```java
 private Elvis() {
 	if(INSTANCE != null){
-		throw new RuntimeException("생성자를 호출할 수 없습니다!!");
+		throw new RuntimeException("생성자를 호출할 수 없습니다!");
 	}
 }
 ```
+
