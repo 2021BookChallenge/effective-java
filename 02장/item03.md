@@ -111,4 +111,35 @@ public class Elvis {
 1. API를 바꾸지 않고도 싱클턴이 아니게 변경할 수 있다.  
 유일한 인스턴스를 반환하던 팩터리 메서드가 호출하는 스레드 별로 다른 인스턴스를 넘겨주게 할 수 있다.
 2. 원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
-3. 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다.
+3. 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다.  
+
+    ```java
+    Supplier<Elvis> elvisSupplier = Elvis::getInstance;
+    Elvis elvis = elvisSupplier.get();
+    ```
+
+&nbsp;
+
+### 두 방식의 문제점
+
+각 클래스를 직렬화한 후 역직렬화할 때 새로운 인스턴스를 만들어서 반환한다.  
+이를 방지하기 위해 `readResolve` 에서 싱글턴 인스턴스를 반환하고, 모든 필드에 `transient`(직렬화 제외) 키워드를 넣는다.
+
+싱글턴 클래스를 직렬화하려면 단순히 `Serializable`을 구현하고 선언하는 것만으로 부족하다.  
+모든 인스턴스 필드를 일시적(`transient`)라고 선언하고 `readResolve` 메서드를 제공해야 한다.
+
+이렇게 하지 않으면 직렬화된 인스턴슬르 역직렬화할 때마다 새로운 인스턴스가 만들어진다.
+
+가짜 `Elvis`탄생을 예방하고 싶다면 `Elvis` 클래스에 다음의 `readResolve` 메서드를 추가하자
+
+##### 싱글턴임을 보장해주는 `readResolve` 메서드
+
+```java
+private Obejct readResolve() {
+	return INSTANCE;
+}
+```
+'진짜' Elvis를 반환하고, 가짜 Elvis는 가비지 컬렉터에 맡긴다.
+
+### 3. 원소가 하나인 열거 타입을 선언하는 방식
+
