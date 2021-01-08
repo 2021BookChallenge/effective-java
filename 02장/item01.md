@@ -3,6 +3,26 @@
 클래스의 인스턴스를 생성하는 방법은 (1) public 생성자 (2) 정적 팩터리 메서드가 있다.  
 클래스는 생성자와 별도로 **정적 팩터리 메서드**(static factory method)를 제공할 수 있다.
 
+1. public 생성자
+```java
+public class Person {
+	public Person() {
+	}
+}
+```
+2. 정적 팩터리 메서드(static factory method)
+```java
+public class Person {
+	private static Person PERSON = new Person();
+    
+	private Person() { // 외부 생성 금지
+	}
+
+	public static final Person getInstance() { // factory method
+		return PERSON;
+	}
+}
+```
 java개발을 하다보면 정적 팩터리 메서드를 사용하는 경우들이 있다.  
 대표적으로 **Arrays, Collections** 클래스에서 사용하는 메서드들이다.
 ```java
