@@ -7,7 +7,7 @@ java개발을 하다보면 정적 팩터리 메서드를 사용하는 경우들�
 대표적으로 **Arrays, Collections** 클래스에서 사용하는 메서드들이다.
 ```java
 int[] nums = {1,2,3,4,5};
-List<String> list = Arrays.**asList**(nums);
+List<String> list = Arrays.asList(nums);
 Collections.sort(list);
 ```
 
