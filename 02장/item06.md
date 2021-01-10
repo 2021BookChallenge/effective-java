@@ -25,6 +25,8 @@ cf) String pool의 플라이웨이트 패턴: 같은 내용의 String 객체가 
 생성자는 호출할 때마다 새로운 객체를 만들지만, 팩터리 메서드는 그렇지 않다.  
 ex) `Boolean(String)` 생성자 대신 `Boolean.valueOf(String)` 팩터리 메서드 사용
 
+&nbsp;
+
 ##### 재사용 빈도가 높고 생성비용이 비싼 경우 - 캐싱하여 재사용 하자.
 
 ```java
