@@ -56,3 +56,40 @@ public class RomanNumerals {
 
 생성비용이 비싼 객체라면 "캐싱" 방식을 고려해야 한다.   
 자주 쓰는 값이라면 `static final`로 초기에 캐싱해놓고 재사용 하자.
+
+&nbsp;
+
+##### 같은 인스턴스를 대변하는 여러 개의 인스턴스를 생성하지 말자
+
+```java
+Map<String, Object> map = new HashMap<>();
+map.put("Hello", "World");
+
+Set<String> set1 = map.keySet();
+Set<String> set2 = map.keySet();
+
+assertThat(set1).isSameAs(set2); // TRUE
+```
+
+Map 인터페이스의 `keySet` 메서드는 Map 객체 안의 키 전부를 담은 `Set` 뷰를 반환한다.  
+하지만, 동일한 Map에서 호출하는 `keySet` 메서드는 같은 Map을 대변하기 때문에 반환한 객체 중 하나를 수정하면 다른 모든 객체가 따라서 바뀐다.  
+따라서 `keySet`이 뷰 객체 여러 개를 만들 필요도 없고 이득도 없다.
+
+
+&nbsp;
+
+##### 의도치않은 오토박싱이 숨어들지 않도록 주의하자
+```java
+private static long sum() {
+	Long sum = 0L;
+	for(long i=0; i<=Integer.MAX_VALUE; i++) {
+		sum += i;
+	}
+	return sum;
+}
+```
+
+`sum`변수를 `long`이 아닌 `Long`으로 사용해서 불필요한 `Long`인스턴스가 약 231개나 만들어졌다.  
+(`long` 타입인 `i`가 `Long` 타입인 `sum` 인스턴스에 더해질 때마다)
+
+**박싱된 기본 타입보다는 기본 타입을 사용하고, 의도치 않은 오토박싱이 숨어들지 않도록 주의하자.**
