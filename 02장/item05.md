@@ -52,7 +52,7 @@ public class SpellChecker {
 	public List<String> suggestions(String typo) { return null; } 
 }
 ```
-불변을 보장하여 여러 클라이언트가 의존 객체들을 안심하고 공유할 수 있다.
+불변을 보장하여 (변경될 일이 없기 때문에) 여러 클라이언트가 의존 객체들을 안심하고 공유할 수 있다.
 
 ### 팩터리 메서드 패턴
 
@@ -60,7 +60,20 @@ public class SpellChecker {
 (팩터리: 호출할 때마다 특정 타입의 인스턴스를 반복해서 만들어주는 객체)
 
 ex) `Supplier<T>` 인터페이스  
-`Supplier<T>`를 입력으로 받는 메서드는 한정적 와일드카드 타입을 사용해 팩터리의 타입 매개변수를 제한
+
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+		/**
+     * Gets a result.
+     *
+     * @return a result
+     */
+    T get(); // T 타입 객체를 찍어낸다
+}
+```
+
+`Supplier<T>`를 입력으로 받는 메서드는 **한정적 와일드카드 타입**을 사용해 팩터리의 타입 매개변수를 제한
 
 ```java
 Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
