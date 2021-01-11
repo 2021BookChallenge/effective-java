@@ -214,7 +214,7 @@ public class NutritionFacts {
 이 빌더의 Setter 메서드는 빌더 자신을 반환하기 때문에 연쇄적으로 호출할 수 있다.(method chaining)
 
 ```
-NutritionFacts cocaCola = new NutriFactsBuilder(240, 8)
+NutritionFacts cocaCola = new NutriFacts.Builder(240, 8)
       .calories(100).sodium(35).carbohydrate(30).build();
 ```
 
