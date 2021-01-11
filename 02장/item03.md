@@ -149,7 +149,7 @@ public class Elvis {
 
 가짜 `Elvis`탄생을 예방하고 싶다면 `Elvis` 클래스에 다음의 `readResolve` 메서드를 추가하자
 
-##### 싱글턴임을 보장해주는 `readResolve` 메서드
+##### 역직렬화시 반드시 호출되는 `readResolve` 메소드를 싱글턴을 리턴하도록 수정
 
 ```java
 private Obejct readResolve() {
