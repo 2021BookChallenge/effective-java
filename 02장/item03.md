@@ -6,6 +6,8 @@ ex) 함수(무상태 객체), 설계상 유일해야 하는 시스템 컴포넌�
 
 생성자를 private으로 만들어 new를 통해 밖에서 호출 못하게, static method로 사용 가능.
 
+ex) Spring Framework 안의 Bean들은 기본 scope이 ApplicationContext안의 scope에서 singleton.
+
 ### 싱글턴의 한계
 
 1. **private 생성자를 가지고 있기 때문에 상속할 수 없다.**  
