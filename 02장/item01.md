@@ -193,10 +193,12 @@ public class Main {
 정적 메서드로부터 인터페이스 자체를 반환하여, 구현 클래스를 공개하지 않고도 그 객체를 반환할 수 있다.  
 구현 클래스의 상세를 숨길 수 있고, 사용자는 객체를 인터페이스만으로 다룰 수 있다.
 
-API를 만들 때 이 유연성을 응용하면 구현 클래스를 공개하지 않고도 그 객체를 반환할 수 있어, API를 작게 유지할 수 있다.  
-이는 인터페이스를 정적 팩토리 메서드의 반환 타입으로 사용하는 **인터페이스 기반 프레임워크**를 만드는 핵심 기술이기도 하다.
+클래스에서 만들어 줄 객체의 클래스를 선택하는 유연함이 있다. 리턴타입의 하위 타입인 인스턴스를 만들어줘도 되니까, 리턴 타입은 인터페이스로 지정하고 구현 클래스를 API에 노출시키지 않고도 그 객체를 반환할 수 있어, API를 작게 유지할 수 있다. 이는 인터페이스를 정적 팩토리 메서드의 반환 타입으로 사용하는 **인터페이스 기반 프레임워크**를 만드는 핵심 기술이기도 하다.
 
-이 예로 java.util.Collections가 있다.  
+리턴 타입엔 인터페이스만 노출, 실제 리턴하는 객체는 인터페이스의 구현체를 리턴하는 것.  
+→ 밖에서 보는 클라이언트 입장에선 인터페이스만 가지고 코딩, 실제 구현체는 모름.
+
+이 예로 `java.util.Collections`가 있다.  
 프로그래머는 명시한 인터페이스대로 동작하는 객체를 얻을 것임을 알기에 굳이 별도 문서를 찾아가며 실제 구현 클래스가 무엇인지 알아보지 않아도 된다.  
 나아가 정적 팩토리 메서드를 사용하는 클라이언트는 얻은 객체를 (그 구현 클래스가 아닌) 인터페이스만으로 다루게 된다.
 
@@ -209,6 +211,19 @@ API를 만들 때 이 유연성을 응용하면 구현 클래스를 공개하지
 이를 통해서 사용자는 팩토리 메서드가 반환하는 인스턴스가 어떤 클래스인지 알 수도 없고, 알 필요도 없어진다.  
 → 철저히 인터페이스 기반의 구현이 이루어진다.
 
+`EnumSet` 클래스는 생성자 없이 public static 메서드, `allOf()`, `of()` 등을 제공한다. 그 안에서 리턴하는 객체의 타입은 enum 타입의 개수에 따라 `RegularEnumSet`, `JumboEnumSet`으로 달라진다.
+
+```java
+public class Foo {
+	enum Color {
+		RED, BLUE, WHITE
+	}
+
+	public static void main(String[] args) {
+		EnumSet<Color> colors = Enumset.allOF(Color.class);
+	}
+}
+```
 
 ex)  
 
@@ -290,6 +305,8 @@ public class Main {
 
 대표적인 서비스 제공자 프레임워크로는 `JDBC(Java Database Connectivity)`가 있다.  
 MySql, OracleDB, MariaDB등 다양한 Database를 JDBC라는 프레임워크로 관리할 수 있다.
+
+ex) JDBC의 경우, `DriverManager.registerDriver()`가 프로바이더 등록 API, `DriverManager.getConnection()`이 서비스 액세스 API, 그리고 `Driver`가 서비스 프로바이더 인터페이스 역할을 한다. `getConnection`을 썼을 때 실제 return 되어서 나오는 객체는 DB Driver마다 다르다.
 
 &nbsp;
 
