@@ -30,6 +30,8 @@ int[] nums = {1,2,3,4,5};
 List<String> list = Arrays.asList(nums);
 Collections.sort(list);
 ```
+public 생성자를 사용해서 객체를 생성하는 전통적인 방법 말고,  
+이렇게 ***public static 팩터리 메서드*** 를 사용해서 해당 클래스의 인스턴스를 만드는 방법도 있다.
 
 &nbsp;
 
@@ -63,6 +65,33 @@ public static Boolean valueOf(boolean b) {
 
 ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 
+동일한 시그니처를 가진 생성자도 여러 개 만들 수 없기 때문에, 
+
+```java
+public class Foo {
+	public Foo(String name) { ... }
+	public Foo(String address) { ... } // 컴파일 에러
+}
+```
+
+이런 경우 static 팩터리 메서드를 사용하는 것이 바람직하다.
+
+```java
+public class Foo {
+	public Foo() { ... }
+	public static withName(String name) { 
+		Foo foo = new Foo();
+		foo.name = name;
+		return foo;
+	}
+	public static withAddress(String address) { 
+		Foo foo = new Foo();
+		foo.address = address;
+		return foo;
+	} 
+}
+```
+
 &nbsp;
 
 ### 2. 호출될 때마다 인스턴스를 새로 생성하지 않아도 된다.
@@ -71,6 +100,23 @@ ex) `BigInteger.probablePrime`: '값이 소수인 `BigInteger`를 반환한다.'
 
 정적 팩터리 메서드 호출을 위해 새로운 인스턴스를 생성하지 않기 때문에, 불변 클래스(immutable class)는 인스턴스를 캐싱하여 재활용하는 식으로 불필요한 객체 생성을 피할 수 있다.  
 불변 클래스(Immutable)는 인스턴스를 미리 만들어 놓거나, 새로 생성한 인스턴스를 캐싱하여 재활용해 불필요한 객체 생성을 막아 성능을 끌어올려 준다.  
+
+```java
+public class Foo {
+	private static final Foo GOOD_NIGHT = new Foo();
+	public Foo() { ... }
+	public static getInstance() { 
+		return GOOD_NIGHT;
+	} 
+
+	public static void main(String[] args) {
+		Foo foo = Foo.getInstance();
+	}
+}
+```
+
+`GOOD_NIGHT`이라는 상수를 만들어 `getInstance()`가 호출될 때마다 매번 새로운 Foo 객체가 아닌,  
+동일한 (이미 만들어놓은) Foo 객체가 return 되도록 함.
 
 > - **불변 클래스 (Immutable)**  
 : 변경이 불가능한 클래스  
