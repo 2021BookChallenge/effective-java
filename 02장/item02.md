@@ -339,6 +339,39 @@ public class Main {
 
 &nbsp;
 
+## 💎 Lombok @Builder
+
+lombok으로 @Builder 애노테이션을 붙이면 Builder 패턴을 생성해준다.
+
+```java
+@Builder
+public class NutritionFacts {
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+	
+		public static void main(String[] args) {
+			NutritionFacts.builder()
+								.servingSize()
+								.servings()
+								.calories()
+								.fat()
+								.sodium()
+								.carbohydrate()
+								.build();
+		}
+}
+```
+
+(기본 생성자는 만들어주지 않음)
+
+setter없이 필요한 매개변수 값을 set한 후에 build하여 thread-safe하게 사용할 수 있다.
+
+&nbsp;
+
 ## 💎 결론
 
 **생성자나 정적 팩터리가 처리해야 할 매개변수가 많다변 빌더 패턴을 선택하는 게 더 낫다.**
