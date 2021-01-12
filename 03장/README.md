@@ -10,6 +10,8 @@
 
 메서드를 잘못 구현하면 대상 클래스가 이 규약을 준수한다고 가정하는 클래스(`HashMap`과 `HashSet`등)을 오동작하게 만들 수 있다.
 
+&nbsp;
+
 ## 🔖 index
 
-🔗 [아이템 10. `equals`는 일반 규약을 지켜 재정의 하라]()
+🔗 [아이템 10. `equals`는 일반 규약을 지켜 재정의 하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/03%EC%9E%A5/item10.md)  
