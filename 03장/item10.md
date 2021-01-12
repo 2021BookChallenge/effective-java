@@ -88,7 +88,7 @@ public final class CaseInsensitiveString{
     this.s = Obejcts.requireNonNull(s);
   }
 
-	// 대칭성 위배!
+  // 대칭성 위배!
   @Override public boolean equals(Object o){
     if(o instanceof CaseInsensitiveString)
       return s.equalsIgnoreCase(((CaseInsensitiveString) o).s);
@@ -158,24 +158,24 @@ public class ColorPoint extends Point {
 
 ##### 1. 잘못된 코드 - 대칭성 위배!  
 
-    ```java
+```java
     @Override public boolean equals(Object o) {
     	if(!o instanceof ColorPoint)
     		return false;
     	return super.equals(o) && ((ColorPoint) o).color == color;
     }
-    ```
+```
 
-    ```java
+```java
     public static void main(){
       Point p = new Point(1,2);
       ColorPoint cp = new ColorPoint(1,2, Color.RED);
       p.equals(cp);    // true
       cp.equals(p);    // false
     }
-    ```
+```
 
-    `ColorPoint`의 `equals`는 입력 매개변수의 클래스 종류가 다르다며 매번 `false`만 반환할 것이다. 
+`ColorPoint`의 `equals`는 입력 매개변수의 클래스 종류가 다르다며 매번 `false`만 반환할 것이다. 
 
 ##### 2. 잘못된 코드 - 추이성 위배!  
 
