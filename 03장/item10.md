@@ -1,4 +1,7 @@
 # 🔗 아이템 10. equals는 일반 규약을 지켜 재정의 하라
+> `equals`를 다 구현했다면 세 가지만 자문해보자.  
+*대칭적인가? 추이성이 있는가? 일관적인가?*
+
 `equals` 메서드를 재정의하지 않고 그냥 두면, 그 클래스의 인스턴스는 오직 자기 자신과만 같게 된다.
 
 &nbsp;
@@ -292,3 +295,126 @@ ex) `java.sql.Timestamp`: `java.util.Date` 확장 후 `nanoseconds` 필드 추�
 ### 일관성(consistency)
 
 > 두 객체가 같다면 (어느 하나 혹은 두 객체 모두가 수정되지 않는 한) 앞으로도 영원히 같아야 한다.
+
+- 가변 객체의 경우 비교 시점에 따라 서로 다를 수도 혹은 같을 수도 있다.
+- 불변 객체는 한번 다르면 끝까지 달라야 한다.
+- 클래스가 불변이든 가변이든 `equals`의 판단에 신뢰할 수 없는 자원이 끼어들게 해서는 안 된다.  
+ex) `java.net.URL`의 `equals`는 주어진 URL과 매핑된 호스트의 IP주소를 이용해 비교하는데,  
+호스트 이름을 IP주소로 바꾸려면 네트워크를 통해야 하므로 그 결과가 항상 같다고 보장할 수 없다.  
+→ `equals`는 항시 메모리에 존재하는 객체만을 사용한 결정적(deterministic) 계산만 수행해야 한다.
+
+### null-아님
+
+모든 객체가 `null`과 같지 않아야 한다.
+
+**잘못된 명시적 null 검사**
+
+```java
+@Override
+public boolean equals(Object o) {
+  if(o == null) { 
+      return false;
+  }
+}
+```
+
+**올바른 묵시적 null 검사 - 이쪽이 낫다.**
+
+```java
+@Override
+public boolean equals(Object o) {
+  if(!(o instanceof MyType)) { 
+      return false;
+  }
+  MyType myType = (MyType) o;
+}
+```
+
+동시성을 검사하려면 `equals`는 건네받은 객체를 적절히 형변환한 후 필수 필드들의 값을 알아내야 한다.  
+따라서, 형변환에 앞서 `instanceof` 연산자로 입력 매개변수가 올바른 타입인지 검사해야 한다.  
+입력이 `null`이면 타입 확인 단계에서 `false`를 반환하므로 `null` 검사를 명시적으로 하지 않아도 된다.
+
+## 💎 정리: 양질의 `equals` 메서드 구현 방법
+
+1. `==`연산자를 사용해 입력이 자기 자신의 참조인지 확인한다.  
+자기 자신이면 `true`를 반환한다. 단순한 성능 최적화용으로 비교 작업이 복잡한 상황일 때 값어치를 한다.
+2. `instanceof` 연산자로 입력이 올바른 타입인지 확인한다.  
+가끔 해당 클래스가 구현한 특정 인터페이스를 비교할 수도 있다.  
+이런 인터페이스를 구현한 클래스라면 `equals`에서 (클래스가 아닌) 해당 인터페이스를 사용해야한다.  
+ex) `Set`, `List`, `Map`, `Map.Entry` 등 컬렉션 인터페이스들
+3. 입력을 올바른 타입으로 형변환 한다.  
+2번에서 `instanceof` 연산자로 입력이 올바른 타입인지 검사 했기 때문에 이 단계는 100% 성공한다.
+4. 입력 객체와 자기 자신의 대응되는 '핵심' 필드들이 모두 일치하는지 하나씩 검사한다.  
+모두 일치해야 `true`를 반환한다.
+
+## 💎 `equals` 구현 시 주의할 추가 사항
+
+- **기본 타입**  
+: `==` 연산자 비교
+- **참조 타입**  
+: `equals` 메서드로 비교
+- **float, double 필드**  
+: 정적 메서드 `Float.compare(float, float)`와 `Double.compare(double, double)`로 비교  
+`Float.equals(float)`나 `Double.equals(double)`은 오토 박싱을 수반해 성능상 좋지 않다.
+- **배열 필드**  
+: 원소 각각을 지침대로 비교한다. 모두가 핵심 필드라면 `Arrays.equals()`를 사용한다.
+- **null 정상값 취급 방지**  
+: `Object.equals(object, object)`로 비교하여 `NullPointException` 발생을 예방한다.
+- 비교하기 **복잡한 필드를 가진 클래스**  
+: 필드의 표준형(canonical form)을 저장한 후 표준형끼리 비교
+- **필드의 비교 순서는 `equals` 성능을 좌우한다.**  
+: 다를 가능성이 크거나 비교하는 비용이 싼 필드부터 비교  
+파생 필드가 객체 전체 상태를 대표하는 경우, 파생 필드부터 비교
+- `**equals`를 재정의할 땐 `hashCode`도 반드시 재정의하자**
+- **너무 복잡하게 해결하려 들지 말자.**
+- **Object 외의 타입을 매개변수로 받는 `equals` 메서드는 선언하지 말자.**  
+`public boolean equals(MyClass o)`: 입력 타입이 Object가 아니므로 오버로딩한 것이다.
+
+### 잘 구현된 예
+
+```java
+public class PhoneNumber {
+    private final short areaCode, prefix, lineNum;
+
+    public PhoneNumber(int areaCode, int prefix, int lineNum) {
+        this.areaCode = rangeCheck(areaCode, 999, "지역코드");
+        this.prefix = rangeCheck(prefix, 999, "프리픽스");
+        this.lineNum = rangeCheck(lineNum, 9999, "가입자 번호");
+    }
+
+    private static short rangeCheck(int val, int max, String arg) {
+        if(val < 0 || val > max) {
+            throw new IllegalArgumentException(arg + ": " + val);
+        }
+        return (short) val;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this) {
+            return true;
+        }
+
+        if(!(o instanceof PhoneNumber)) {
+            return false;
+        }
+
+        PhoneNumber pn = (PhoneNumber) o;
+        return pn.lineNum == lineNum && pn.prefix == prefix
+                && pn.areaCode == areaCode;
+    }
+}
+```
+
+&nbsp;
+
+## 💎 `AutoValue` 프레임워크
+
+`equals`(`hashCode`도 마찬가지)를 작성하고 테스트하는 작업을 대신해줄 오픈 소스.  
+클래스에 애너테이션 하나만 추가하면 AutoValue가 이 메서드들을 알아서 작성해준다.
+
+&nbsp;
+
+## 💎 결론
+
+꼭 필요한 경우가 아니면 `equals`를 재정의하지 말자. 많은 경우에 `Object`의 `equals`가 여러분이 원하는 비교를 정확히 수행해준다. 재정의해야 할 때는 그 클래스의 핵심 필드 모두를 빠짐없이, 다섯 가지 규약을 확실히 지켜가며 비교해야 한다.
