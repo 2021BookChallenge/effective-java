@@ -3,6 +3,7 @@
 ## 🔖 index
 
 🧷 [**1장 | 들어가기**](https://github.com/2021BookChallenge/Effective-Java/tree/main/01%EC%9E%A5)  
+
 🧷 [**2장 | 객체 생성과 파괴**](https://github.com/2021BookChallenge/Effective-Java/tree/main/02%EC%9E%A5)  
 
 🔗 [아이템 1. 생성자 대신 정적 팩터리 메서드를 고려하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/02%EC%9E%A5/item01.md)  
