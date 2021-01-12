@@ -16,4 +16,6 @@
 🔗 [아이템 8. finalizer와 cleaner 사용을 피하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/02%EC%9E%A5/item08.md)  
 🔗 [아이템 9. try-finally보다는 try-with-resources를 사용하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/02%EC%9E%A5/item09.md)  
 
-🧷 [**3장 | 모든 객체의 공통 메서드**](https://github.com/2021BookChallenge/Effective-Java/tree/main/03%EC%9E%A5)
+🧷 [**3장 | 모든 객체의 공통 메서드**](https://github.com/2021BookChallenge/Effective-Java/tree/main/03%EC%9E%A5)  
+
+🔗 [아이템 10. equals는 일반 규약을 지켜 재정의 하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/03%EC%9E%A5/item10.md)
