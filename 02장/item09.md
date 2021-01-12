@@ -27,20 +27,20 @@ public static String firstLineOfFile(String path) throw IOException {
 
 ```java
 static void copy(String src, String dst) throws IOException {
-		InputStream in = new FileInputStream(src);
+	InputStream in = new FileInputStream(src);
+	try {
+		OutputStream out = new FileOutputStream(dst);
 		try {
-				OutputStream out = new FileOutputStream(dst);
-				try {
-						byte[] buf = new byte[BUFFER_SIZE];
-						int n;
-						while ((n = in.read(buf)) >= 0)
-								out.write(buf, 0, n);
-				} finally {
-						out.close();
-				}
+			byte[] buf = new byte[BUFFER_SIZE];
+			int n;
+			while ((n = in.read(buf)) >= 0)
+			out.write(buf, 0, n);
 		} finally {
-				in.close();
+			out.close();
 		}
+	} finally {
+		in.close();
+	}
 }
 ```
 
@@ -76,13 +76,13 @@ public static String firstLineOfFile(String path) throw IOException {
 
 ```java
 static void copy(String src, String dst) throws IOException {
-		try (InputStream   in = new FileInputStream(src);
-				OutputStream out = new FileOutputStream(dst)) {
-				byte[] buf = new byte[BUFFER_SIZE];
-				int n;
-				while ((n = in.read(buf)) >= 0)
-						out.write(buf, 0, n);
-				}
+	try (InputStream in = new FileInputStream(src);
+		OutputStream out = new FileOutputStream(dst)) {
+		byte[] buf = new byte[BUFFER_SIZE];
+		int n;
+		while ((n = in.read(buf)) >= 0)
+		out.write(buf, 0, n);
+	}
 }
 ```
 
@@ -148,4 +148,4 @@ public class AppRunner {
 
 꼭 회수해야 하는 자원을 다룰 때는 *try-finally* 말고 *try-with-resources*를 사용하자.  
 예외는 없다. 코드는 더 짧고 분명해지고, 만들어지는 예외 정보도 훨씬 유용하다.  
-*try-finally*로 작성하면 실용적이지 못할 만큼 코드가 지저분해지는 경우라도,  *try-with-resources*로는 정확하고 쉽게 자원을 회수할 수 있다. **
+*try-finally*로 작성하면 실용적이지 못할 만큼 코드가 지저분해지는 경우라도, *try-with-resources*로는 정확하고 쉽게 자원을 회수할 수 있다. **
