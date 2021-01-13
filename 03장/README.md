@@ -14,3 +14,4 @@
 ## 🔖 index
 
 🔗 [아이템 10. `equals`는 일반 규약을 지켜 재정의 하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/03%EC%9E%A5/item10.md)  
+🔗 [아이템 11. equals를 재정의하려거든 hashCode도 재정의하라](https://github.com/2021BookChallenge/Effective-Java/blob/main/03%EC%9E%A5/item11.md)
