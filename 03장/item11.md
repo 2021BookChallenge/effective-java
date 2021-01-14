@@ -64,6 +64,7 @@ map.put(new PhoneNumber(010,1234,5678), new Person("리치"));
 ### 주의할 점
 
 - `equals`비교에 사용되는 필드에 대해서만 해시코드를 계산한다.
+- 성능을 높인답시고 해시코드를 계산할 때 핵심 필드를 생략해서는 안 된다.
 - 만약 hash로 바꾸려는 필드가 기본 타입이 아니면 해당 필드의 hashCode를 불러 구현한다.  
 계산이 복잡한 경우는 표준형을 만들어 구현한다.
 - 참조 타입 필드가 null일 경우 0을 사용.
@@ -82,6 +83,50 @@ map.put(new PhoneNumber(010,1234,5678), new Person("리치"));
         return result;
     }
 ```
-
 `PhoneNumber` 인스턴스의 핵심 필드 3개를 사용해 간단한 계산을 수행하고, 이 과정에 비결정적 요소는 없다.  
 → 동치인 `PhoneNumber` 인스턴스는 서로 같은 해시코드를 가질 것이 확실하다.
+
+##### `Objects` 클래스의 `hashCode` 메서드 - 성능이 살짝 아쉽다.
+
+```java
+@Override
+    public int hashCode() {
+        return Objects.hash(lineNum,prefix,areaCode);
+    }
+```
+입력 인수를 담기 위한 배열이 만들어지고, 입력 중 기본 타입이 있다면 박싱과 언박싱도 거친다. 속도가 느리다.
+
+&nbsp;
+
+## 💎 `hashCode`의 캐싱과 지연 초기화
+
+- 클래스가 불변이고 해시코드를 계산하는 비용이 크다면, 매번 새로 계산하기 보다 캐싱을 고려해야 한다.  
+→ 이 타입의 객체가 주로 해시의 키로 사용될 것 같다면 인스턴스가 만들어질 때 해시코드를 계산해 둔다.
+- 해시의 키로 사용되지 않는 경우라면 `hashCode`가 처음 불릴 때 계산한느 지연 초기화하면 좋다.  
+→ 필드를 지연 초기화 하려면 그 클래스가 *thread-safe*가 되도록 동기화에 신경 쓰는 것이 좋다.
+
+##### 해시코드를 지연 초기화하는 `hashCode` 메서드 - 스레드 안전성까지 고려해야 한다.
+```java
+private int hashCode;
+
+@Override
+public int hashCode() {
+      	int result = hashCode; // 초기값 0을 가진다.
+        if(result == 0) {
+        int result = Integer.hashCode(areaCode);
+        result = 31 * result + Integer.hashCode(areaCode);
+        result = 31 * result + Integer.hashCode(areaCode);
+        hashCode = result;
+        }
+        return result;
+}
+```
+동시에 여러 쓰레드가 hashCode를 호출하면 여러 쓰레드가 동시에 계산하여 우리의 처음 의도와는 다르게 여러번 계산하는 상황이 발생할 수 있다.  
+그래서 지연 초기화를 하려면 동기화를 신경써주는 것이 좋다.
+
+&nbsp;
+
+## 💎 결론
+
+`equals`를 재정의할 때는 `hashCode`도 반드시 재정의해야 한다. 그렇지 않으면 프로그램이 제대로 동작하지 않을 것이다.  
+재정의한 `hashCode`는 `Object`의 API 문서에 기술된 일반 규약을 따라야 하며, 서로 다른 인스턴스라면 되도록 해시코드도 서로 다르게 구현해야 한다. AutoValue 프레임워클르 사용하면 멋진 `equals`와 `hashCode`를 자동으로 만들어준다.
